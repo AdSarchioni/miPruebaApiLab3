@@ -147,6 +147,8 @@ public async Task<IActionResult> UpdatePropietario(int id, Propietario propietar
 [AllowAnonymous]
 public async Task<IActionResult> Login([FromBody] LoginView loginView)
 {
+
+     Console.WriteLine("datos de api clave + usuario: " + loginView.Clave  + loginView.Usuario); 
     try
     {
         // Verifica si el modelo es válido

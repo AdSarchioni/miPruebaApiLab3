@@ -6,7 +6,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.WebHost.UseUrls("http://localhost:5027", "https://localhost:5027");
+builder.WebHost.UseUrls("http://192.168.1.106:5028");
 
 // Agregar servicios a la colección de servicios
 builder.Services.AddControllers();
