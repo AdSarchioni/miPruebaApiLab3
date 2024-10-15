@@ -6,6 +6,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.WebHost.UseUrls("http://localhost:5027", "https://localhost:5027");
+
 // Agregar servicios a la colección de servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

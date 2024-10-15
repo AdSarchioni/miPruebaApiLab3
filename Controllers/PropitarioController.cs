@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
+
 
 namespace inmoWebApiLab3.Controllers.API  // Asegúrate que el namespace coincida con el del proyecto
 {
@@ -168,7 +168,7 @@ public async Task<IActionResult> Login([FromBody] LoginView loginView)
         if (propietario == null || propietario.Clave != hashed)
         {
             return BadRequest("Nombre de usuario o clave incorrecta");
-        }
+        } else {
 
         // Genera el token JWT
         var key = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(config["TokenAuthentication:SecretKey"]));
@@ -193,6 +193,8 @@ public async Task<IActionResult> Login([FromBody] LoginView loginView)
         Console.WriteLine("Token generado: " + tokenString); // Agrega esta línea para depurar
 
         return Ok(new { Token = tokenString });
+    } 
+    
     }
     catch (Exception ex)
     {
