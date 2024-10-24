@@ -143,12 +143,11 @@ public async Task<IActionResult> UpdatePropietario(int id, Propietario propietar
             return NoContent();  // Devuelve un código 204 para indicar éxito
         }
 
-[HttpPost("login")]
+[HttpPost("login")] 
 [AllowAnonymous]
 public async Task<IActionResult> Login([FromBody] LoginView loginView)
 {
-
-     Console.WriteLine("datos de api clave + usuario: " + loginView.Clave  + loginView.Usuario); 
+    Console.WriteLine("datos de api clave + usuario: " + loginView.Clave + loginView.Usuario); 
     try
     {
         // Verifica si el modelo es válido
@@ -170,33 +169,35 @@ public async Task<IActionResult> Login([FromBody] LoginView loginView)
         if (propietario == null || propietario.Clave != hashed)
         {
             return BadRequest("Nombre de usuario o clave incorrecta");
-        } else {
-
-        // Genera el token JWT
-        var key = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(config["TokenAuthentication:SecretKey"]));
-        var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var claims = new List<Claim>
+        } 
+        else 
         {
-            new Claim(ClaimTypes.Name, propietario.Email),
-            new Claim("FullName", propietario.Nombre + " " + propietario.Apellido),
-            new Claim(ClaimTypes.Role, "Propietario"),
-        };
+            // Genera el token JWT
+            var key = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(config["TokenAuthentication:SecretKey"]));
+            var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, propietario.Email),
+                new Claim("FullName", propietario.Nombre + " " + propietario.Apellido),
+                new Claim("IdPropietario",propietario.Id_Propietario.ToString()),
+                new Claim(ClaimTypes.Role, "Propietario"),
+            };
 
-        var token = new JwtSecurityToken(
-            issuer: config["TokenAuthentication:Issuer"],
-            audience: config["TokenAuthentication:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(60),
-            signingCredentials: credenciales
-        );
+            var token = new JwtSecurityToken(
+                issuer: config["TokenAuthentication:Issuer"],
+                audience: config["TokenAuthentication:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: credenciales
+            );
 
-        // Registra el token generado
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-        Console.WriteLine("Token generado: " + tokenString); // Agrega esta línea para depurar
+            // Registra el token generado
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            Console.WriteLine("Token generado: " + tokenString); // Agrega esta línea para depurar
 
-        return Ok(new { Token = tokenString });
-    } 
-    
+            // Retorna solo el token como una cadena
+            return Ok(tokenString);
+        } 
     }
     catch (Exception ex)
     {
@@ -205,9 +206,132 @@ public async Task<IActionResult> Login([FromBody] LoginView loginView)
 }
 
 
+[HttpGet("perfil")]
+public async Task<IActionResult> Perfil(){
+
+try{
+    var email = User.FindFirst(ClaimTypes.Name)?.Value;
+    var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.Email == email);
+
+    if(propietario == null){
+        return NotFound();
     }
-    
+    return Ok(propietario);
 }
+catch(Exception ex){
+    return BadRequest(ex.Message);
+}
+}
+[HttpPut("editar_perfil")]
+
+public async Task<IActionResult> EditarPerfil([FromBody] Propietario propietarioActualizado)
+{
+    try
+    {
+        // Verifica si el modelo es válido
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var email = User.FindFirst(ClaimTypes.Name)?.Value;
+        var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.Email == email);
+
+        if (propietario == null)
+        {
+            return NotFound("Propietario no encontrado");
+        }
+
+        // Actualiza los campos necesarios
+        propietario.Nombre = propietarioActualizado.Nombre;
+        propietario.Apellido = propietarioActualizado.Apellido;
+        propietario.Telefono = propietarioActualizado.Telefono; // Asegúrate de que este campo existe en tu modelo
+        propietario.Direccion = propietarioActualizado.Direccion; // Asegúrate de que este campo existe en tu modelo
+        propietario.Dni = propietarioActualizado.Dni;
+        
+
+        // Guarda los cambios en la base de datos
+        _context.Propietario.Update(propietario);
+        await _context.SaveChangesAsync();
+
+        return Ok(propietario);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
+[HttpPut("cambiar_contrasena")]
+[Authorize]
+public async Task<IActionResult> CambiarContrasena([FromBody] CambiarContrasenaView cambiarContrasenaView)
+{
+    try
+    {
+        // Verifica si el modelo es válido
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var email = User.FindFirst(ClaimTypes.Name)?.Value;
+        var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.Email == email);
+
+        if (propietario == null)
+        {
+            return NotFound("Propietario no encontrado");
+        }
+
+        // Hash de la contraseña ingresada
+        string hashedActual = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            password: cambiarContrasenaView.ContrasenaActual,
+            salt: System.Text.Encoding.ASCII.GetBytes(config["Salt"]),
+            prf: KeyDerivationPrf.HMACSHA1,
+            iterationCount: 1000,
+            numBytesRequested: 256 / 8));
+
+        // Verifica si la contraseña actual es correcta
+        if (propietario.Clave != hashedActual)
+        {
+            return BadRequest("La contraseña actual es incorrecta");
+        }
+
+        // Hash de la nueva contraseña
+        string hashedNueva = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            password: cambiarContrasenaView.ContrasenaNueva,
+            salt: System.Text.Encoding.ASCII.GetBytes(config["Salt"]),
+            prf: KeyDerivationPrf.HMACSHA1,
+            iterationCount: 1000,
+            numBytesRequested: 256 / 8));
+
+        // Actualiza la contraseña en el modelo
+        propietario.Clave = hashedNueva;
+
+        // Guarda los cambios en la base de datos
+        _context.Propietario.Update(propietario);
+        await _context.SaveChangesAsync();
+
+        return Ok("Contraseña cambiada con éxito");
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+     }  
+ }
+    
+
 
 
 

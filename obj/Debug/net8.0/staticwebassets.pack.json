@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa1.PNG",
+      "PackagePath": "staticwebassets\\img\\casa1.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa2.PNG",
+      "PackagePath": "staticwebassets\\img\\casa2.PNG"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.inmoWebApiLab3.props",
+      "PackagePath": "build\\inmoWebApiLab3.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.inmoWebApiLab3.props",
+      "PackagePath": "buildMultiTargeting\\inmoWebApiLab3.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.inmoWebApiLab3.props",
+      "PackagePath": "buildTransitive\\inmoWebApiLab3.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.inmoWebApiLab3.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

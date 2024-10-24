@@ -3,13 +3,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://192.168.1.106:5028");
+builder.WebHost.UseUrls("http://192.168.0.18:5028");
 
 // Agregar servicios a la colección de servicios
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configuración para ignorar referencias cíclicas y evitar incluir $id/$ref
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;  // Opcional, para formato más legible
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -22,9 +30,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                         .AllowAnyMethod()
-                         .AllowAnyHeader());
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 });
 
 // Agregar soporte para autenticación JWT
@@ -56,7 +64,7 @@ builder.Services.AddAuthentication(options =>
         },
         OnTokenValidated = context =>
         {
-            Console.WriteLine("Token validado correctamente: " + context.SecurityToken); // Imprime el token validado
+            Console.WriteLine("Token validado correctamente: " + context.SecurityToken);
             return Task.CompletedTask;
         },
         OnMessageReceived = context =>
@@ -65,7 +73,7 @@ builder.Services.AddAuthentication(options =>
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
             {
                 context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
-                Console.WriteLine("Token recibido: " + context.Token); // Imprimir el token recibido
+                Console.WriteLine("Token recibido: " + context.Token);
             }
             return Task.CompletedTask;
         }
@@ -84,9 +92,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseRouting();
+// Habilitar archivos estáticos desde wwwroot
+app.UseStaticFiles();
 app.UseAuthentication();  // Debe estar antes de UseAuthorization
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
-

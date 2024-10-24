@@ -25,5 +25,5 @@ public partial class Propietario
 
     public string? Clave { get; set; }
 
-
+    public ICollection<Inmueble>? Inmuebles { get; set; } 
 }
