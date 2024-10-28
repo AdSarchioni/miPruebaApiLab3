@@ -97,51 +97,263 @@ public async Task<IActionResult> ObtenerPorId(int id)
         return BadRequest("Se produjo un error al procesar la solicitud." + "\n" + ex.Message);
     }
 }       
-[HttpPut("ActualizarInmueble")]
-        public async Task<IActionResult> Actualizar([FromBody] Inmueble IEditado)
+
+
+
+
+[HttpPut("actualizarInmueble")]
+public async Task<IActionResult> Put([FromBody] Inmueble entidad)
+{
+    try
+    {
+        if (ModelState.IsValid)
+        {
+            // Buscar el inmueble existente por su Id y propietario
+            var inmuebleExistente = _context.Inmueble
+                .Include(e => e.propietario)
+                .FirstOrDefault(e => e.Id_Inmueble == entidad.Id_Inmueble && e.propietario.Email == User.Identity.Name);
+
+            if (inmuebleExistente != null)
+            {
+                // Actualizar únicamente el atributo Estado_Inmueble
+                inmuebleExistente.Estado_Inmueble = entidad.Estado_Inmueble;
+                
+                // Guardar los cambios en el contexto
+                _context.Inmueble.Update(inmuebleExistente);
+                await _context.SaveChangesAsync();
+                
+                return Ok(inmuebleExistente);
+            }
+            return NotFound("Inmueble no encontrado o no pertenece al usuario actual.");
+        }
+        return BadRequest("Modelo inválido.");
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
+/*		// POST api/<controller>
+		[HttpPost("crearInmueble")]
+		public async Task<IActionResult> Post([FromBody] Inmueble entidad)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					entidad.Id_Inmueble = _context.Propietario.Single(e => e.Email == User.Identity.Name).Id_Propietario;
+					_context.Inmueble.Add(entidad);
+					_context.SaveChanges();
+					return CreatedAtAction(nameof(ObtenerPorId), new { id = entidad.Id_Inmueble }, entidad);
+				}
+				return BadRequest();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+*/
+        
+		[HttpPost("crearInmueble4")]
+public async Task<IActionResult> Post14([FromBody] Inmueble entidad)
+{
+    try
+    {
+        if (ModelState.IsValid)
+        {
+            // Obtener el propietario autenticado
+            var propietario = await _context.Propietario.SingleOrDefaultAsync(e => e.Email == User.Identity.Name);
+            if (propietario == null)
+            {
+                return Unauthorized("Propietario no encontrado.");
+            }
+
+            // Asignar el propietario al inmueble
+            entidad.propietario = propietario;
+
+            // Agregar y guardar el nuevo inmueble
+            _context.Inmueble.Add(entidad);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = entidad.Id_Inmueble }, entidad);
+        }
+        return BadRequest("Datos del inmueble inválidos.");
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
+
+// Código en tu controlador
+
+
+[HttpPost("crearInmueble3")]
+public async Task<IActionResult> CrearInmueble([FromBody] Inmueble inmueble)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
+
+    try
+    {
+        // Verificar que el tipo de inmueble existe en la base de datos
+        var tipoInmueble = await _context.Tipo_Inmueble
+            .FirstOrDefaultAsync(t => t.Id_Tipo_Inmueble == inmueble.Id_Tipo_Inmueble);
+
+        if (tipoInmueble == null)
+        {
+            return NotFound(new { message = "El tipo de inmueble especificado no existe." });
+        }
+
+        // Asignar el tipo de inmueble al objeto de inmueble (sin crear una nueva instancia)
+        inmueble.tipo = tipoInmueble;
+
+        // Agregar el inmueble a la base de datos
+        _context.Inmueble.Add(inmueble);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(CrearInmueble), new { id = inmueble.Id_Inmueble }, inmueble);
+    }
+    catch (DbUpdateException ex)
+    {
+        // Captura de excepción si ocurre algún problema al guardar
+        return StatusCode(500, new { message = "Ocurrió un error al guardar el inmueble.", error = ex.Message });
+    }
+}
+
+[HttpPost("crearInmueble2")]
+public async Task<IActionResult> Post1([FromBody] Inmueble entidad)
+{
+    try
+    {
+        if (ModelState.IsValid)
+        {
+            // Obtener el propietario autenticado
+            var propietario = await _context.Propietario.SingleOrDefaultAsync(e => e.Email == User.Identity.Name);
+            if (propietario == null)
+            {
+                return Unauthorized("Propietario no encontrado.");
+            }
+
+            // Asignar el propietario al inmueble
+            entidad.propietario = propietario;
+
+            // Si no se ha especificado un tipo de inmueble en el JSON, buscar un tipo predeterminado
+            if (entidad.tipo == null)
+            {
+                // Buscar un tipo predeterminado (puedes ajustar la lógica según tus necesidades)
+                var tipoInmueblePredeterminado = await _context.Tipo_Inmueble
+                    .FirstOrDefaultAsync(t => t.Id_Tipo_Inmueble == entidad.Id_Tipo_Inmueble); // O cualquier criterio para seleccionar el tipo por defecto
+
+                if (tipoInmueblePredeterminado == null)
+                {
+                    return NotFound("Tipo de inmueble predeterminado no encontrado.");
+                }
+
+                // Asignar el tipo predeterminado al inmueble
+                entidad.tipo = tipoInmueblePredeterminado;
+            }
+
+            // Agregar y guardar el nuevo inmueble
+            _context.Inmueble.Add(entidad);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = entidad.Id_Inmueble }, entidad);
+        }
+        return BadRequest("Datos del inmueble inválidos.");
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+ [HttpPost("crearInmueble")]
+public async Task<IActionResult> Post([FromForm] InmuebleDto entidadDto)
+{
+    try
+    {
+        if (ModelState.IsValid)
+        {
+            // Obtiene el Id_Propietario de las claims
+            var propietarioId = _context.Propietario
+                .Single(e => e.Email == User.Identity.Name)
+                .Id_Propietario;
+
+            // Crea una instancia de Inmueble y asigna los valores del DTO
+            var entidad = new Inmueble
+            {
+                Direccion = entidadDto.Direccion,
+                Uso = entidadDto.Uso,
+                Ambientes = entidadDto.Ambientes,
+                Bano = entidadDto.Bano,
+                Condicion = entidadDto.Condicion,
+                Servicios = entidadDto.Servicios,
+                Precio = entidadDto.Precio,
+                Tamano = entidadDto.Tamano,
+                Patio = entidadDto.Patio,
+                Cochera = entidadDto.Cochera,
+                Id_Tipo_Inmueble = entidadDto.Id_Tipo_Inmueble,
+                Estado_Inmueble = entidadDto.Estado_Inmueble,
+                Id_Propietario = propietarioId
+            };
+
+            // Si hay una imagen, guárdala en la carpeta `wwwroot/img`
+            if (entidadDto.Imagen != null)
+            {
+                // Genera la ruta completa para guardar la imagen
+                var imagePath = Path.Combine("wwwroot/img", entidadDto.Imagen.FileName);
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await entidadDto.Imagen.CopyToAsync(stream);
+                }
+
+                // Guarda solo el nombre del archivo en la base de datos
+                entidad.imagen = entidadDto.Imagen.FileName; // Guardamos solo el nombre del archivo
+            }
+
+            // Guarda el inmueble en la base de datos
+            _context.Inmueble.Add(entidad);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = entidad.Id_Inmueble }, entidad);
+        }
+
+        return BadRequest();
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+	[HttpGet("ObtenerAlquilados")]
+		public async Task<IActionResult> ObtenerAlquilados()
 		{
 			try
 			{
 				var usuarioActual = User.Identity.Name;
 
-				// Verifico si el modelo recibido es válido
-				if (!ModelState.IsValid)
-				{
-					return BadRequest(ModelState);
-				}
-
-				// Verifico si el inmueble pertenece al usuario actual
-				var inmuebleExistente = await _context.Inmueble
-					.Include(i => i.propietario)
-					.AsNoTracking()
-					.FirstOrDefaultAsync(i => i.Id_Inmueble == IEditado.Id_Inmueble && i.propietario.Email == usuarioActual);
-
-				if (inmuebleExistente != null)
-				{
-					// Actualizo el inmueble
-					_context.Inmueble.Update(IEditado);
-					await _context.SaveChangesAsync();
-
-					return Ok(IEditado);
-				}
-				else
-				{
-					return NotFound("No se pudo encontrar el inmueble o no tienes permiso para editarlo.");
-				}
+				return Ok(_context.Contrato.Include(e => e.inmueble)
+                                            .Include(e => e.inquilino)
+                                            .Include(e => e.inmueble.propietario)
+                                            .Where(e => e.inmueble.propietario.Email == usuarioActual)
+											.Select(e => e.inmueble ));
 			}
 			catch (Exception ex)
 			{
-
-				return BadRequest("Se produjo un error al procesar la solicitud.");
+				return BadRequest(ex.Message);
 			}
 		}
 
-
-
+}
 
     } 
     
- }
+ 
     
 
 

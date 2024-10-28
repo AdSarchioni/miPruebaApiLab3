@@ -1,12 +1,56 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\042b34f2-4dfb-4c4d-a725-c7e9b28697e0_IMG-20241026-WA0004.jpg",
+      "PackagePath": "staticwebassets\\img\\042b34f2-4dfb-4c4d-a725-c7e9b28697e0_IMG-20241026-WA0004.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\35d8d937-e3c7-401e-bd64-4811554c587c_IMG-20241026-WA0004.jpg",
+      "PackagePath": "staticwebassets\\img\\35d8d937-e3c7-401e-bd64-4811554c587c_IMG-20241026-WA0004.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\53aad0cd-b342-4145-9861-3f35769222c0_IMG-20241026-WA0004.jpg",
+      "PackagePath": "staticwebassets\\img\\53aad0cd-b342-4145-9861-3f35769222c0_IMG-20241026-WA0004.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241024-WA0012.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241024-WA0012.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241025-WA0063.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241025-WA0063.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241026-WA0040.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241026-WA0040.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241026-WA0045.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241026-WA0045.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241026-WA0047.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241026-WA0047.jpg"
+    },
+    {
       "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa1.PNG",
       "PackagePath": "staticwebassets\\img\\casa1.PNG"
     },
     {
       "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa2.PNG",
       "PackagePath": "staticwebassets\\img\\casa2.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\img-20241024-wa0035.jpg",
+      "PackagePath": "staticwebassets\\img\\img-20241024-wa0035.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\img-20241024-wa0074.jpg",
+      "PackagePath": "staticwebassets\\img\\img-20241024-wa0074.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\img-20241026-wa0048.jpg",
+      "PackagePath": "staticwebassets\\img\\img-20241026-wa0048.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.inmoWebApiLab3.props",

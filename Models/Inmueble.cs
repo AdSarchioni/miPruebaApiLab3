@@ -6,6 +6,7 @@ using inmoWebApiLab3.Models;
 public class Inmueble
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id_Inmueble { get; set; }
     
 
@@ -40,8 +41,10 @@ public class Inmueble
 
     public string? imagen { get; set; }
 
-
+   public int Id_Tipo_Inmueble { get; set; }
     public int Estado_Inmueble { get; set; }
+
+   public int Id_Propietario { get; set; }
    [ForeignKey("Id_Tipo_Inmueble")]
    public Tipo_Inmueble? tipo { get; set; }
    [ForeignKey("Id_Propietario")]
