@@ -26,7 +26,7 @@ namespace inmoWebApiLab3.Controllers.API  // Asegúrate que el namespace coincid
 
           
    
-  [HttpGet("obtenerInquilinoPorInmueble")]
+ /* [HttpGet("obtenerInquilinoPorInmueble")]
 public async Task<IActionResult> InquilinoPorInmueble(int id)
 {
     try
@@ -65,7 +65,7 @@ public async Task<IActionResult> InquilinoPorInmueble(int id)
         Console.WriteLine($"Error al obtener el inquilino: {ex.Message}");
         return BadRequest(ex.Message); // Maneja cualquier excepción que ocurra
     }
-}
+} */
 
    [HttpGet("obtenerInquilinos")]
 public async Task<IActionResult> GetInquilinos()
@@ -96,7 +96,7 @@ public async Task<IActionResult> GetInquilinos()
     }
 }
    
-   
+
    
     }
 
