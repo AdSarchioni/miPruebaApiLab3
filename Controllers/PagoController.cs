@@ -21,7 +21,7 @@ namespace inmoWebApiLab3.Controllers.API
             this.config = config;
             this.environment = environment;
         }
-         [HttpGet("obtenerPagosPorContrato/{id}")]
+         [HttpGet("obtenerPagosPorContrato")]
 		public async Task<IActionResult> PagosPorContrato(int id)
         {
 

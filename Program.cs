@@ -1,3 +1,4 @@
+// using inmoWebApiLab3.Models;
 using inmoWebApiLab3.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://192.168.0.18:5028");
+builder.WebHost.UseUrls("http://192.168.1.100:5028");
 
 // Agregar servicios a la colección de servicios
 builder.Services.AddControllers()
@@ -54,9 +55,23 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["TokenAuthentication:SecretKey"]))
     };
 
-    // Manejo de eventos para registrar errores y tokens
+    // Opción extra para usar el token en el hub y otras peticiones sin encabezado (enlaces, src de img, etc.)
     options.Events = new JwtBearerEvents
     {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/chatsegurohub") ||
+                path.StartsWithSegments("/api/propietarios/reset") ||
+                path.StartsWithSegments("/api/propietarios/token") ||
+                path.StartsWithSegments("/api/propietarios/mail&token")))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        },
         OnAuthenticationFailed = context =>
         {
             Console.WriteLine("Error de autenticación: " + context.Exception.Message);
@@ -65,16 +80,6 @@ builder.Services.AddAuthentication(options =>
         OnTokenValidated = context =>
         {
             Console.WriteLine("Token validado correctamente: " + context.SecurityToken);
-            return Task.CompletedTask;
-        },
-        OnMessageReceived = context =>
-        {
-            var authorizationHeader = context.Request.Headers["Authorization"].ToString();
-            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
-            {
-                context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
-                Console.WriteLine("Token recibido: " + context.Token);
-            }
             return Task.CompletedTask;
         }
     };

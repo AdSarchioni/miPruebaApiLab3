@@ -173,3 +173,6 @@ C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\obj\Debug\net8.0\inmoWebApiLab3.
 C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\obj\Debug\net8.0\inmoWebApiLab3.genruntimeconfig.cache
 C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\obj\Debug\net8.0\ref\inmoWebApiLab3.dll
 C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\bin\Debug\net8.0\inmoWebApiLab3.staticwebassets.runtime.json
+C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\bin\Debug\net8.0\MailKit.dll
+C:\Users\adsar\Documents\GitHub\miPruebaApiLab3\bin\Debug\net8.0\MimeKit.dll

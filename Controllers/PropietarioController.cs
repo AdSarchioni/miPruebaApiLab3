@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using inmoWebApiLab3.Models;
-using Microsoft.EntityFrameworkCore;  
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
+using System.Text;
+using MimeKit;
 
 namespace inmoWebApiLab3.Controllers.API  // Asegúrate que el namespace coincida con el del proyecto
 {
 
-   [Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 	[ApiController]
 
@@ -320,11 +320,159 @@ public async Task<IActionResult> CambiarContrasena([FromBody] CambiarContrasenaV
 }
 
 
+        //recupero de olvido mi contraseña para que le mande el mail 
+
+        // GET api/<controller>/token
+        [HttpGet("token")]
+        public async Task<IActionResult> Token()
+        {
+
+            try
+            {
+                var perfil = new
+                {
+                    Email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value, // sacamos el email correcto
+                    Nombre = User.Claims.First(x => x.Type == "Apellido").Value, // sacamos el apellido 
+                };
+                // Busca el propietario por nombre de usuario
+                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.Email == perfil.Email);
+                //se genera clave de 4 
+                Random rand = new Random(Environment.TickCount);
+                string randomChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
+                string nuevaClave = "";
+                for (int i = 0; i < 4; i++)
+                {
+                    nuevaClave += randomChars[rand.Next(0, randomChars.Length)];
+                }
+                byte[] salt;
+                salt = System.Text.Encoding.ASCII.GetBytes(config["Salt"]);
+                // Generar el hash de la nueva contraseña
+                string nuevaContrasena = nuevaClave;  //generar una nueva contraseña por defecto.
+                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                password: nuevaContrasena,
+                                salt: salt,
+                                prf: KeyDerivationPrf.HMACSHA1,
+                                iterationCount: 1000,
+                                numBytesRequested: 256 / 8));
 
 
 
 
 
+
+
+
+
+
+                // actualiza la contraseña del propietario
+                propietario.Clave = hashed;
+                // guarda los cambios en la base de datos
+                _context.SaveChanges();
+
+
+                //Console.WriteLine($"Enviando correo a: {perfil.Email}, con nombre: {perfil.Nombre}");
+
+                // Crear el mensaje de correo
+                var message = new MimeKit.MimeMessage();
+                message.To.Add(new MailboxAddress(perfil.Nombre, perfil.Email));
+                message.From.Add(new MailboxAddress("Sistema", config["SMTPSettings:SMTPUser"]));
+                message.Subject = "Prueba de Correo desde API";
+                message.Body = new TextPart("html")
+                {
+                    Text = @$"<h1>Hola</h1>
+                     <p>¡Solicitaste el cambio tu Clave, {perfil.Nombre}!</p>
+                     <p>Tu nueva clave es: {nuevaClave}</p>",
+                };
+
+                // Usar MailKit.Net.Smtp.SmtpClient para Mailtrap
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    client.ServerCertificateValidationCallback = (object sender,
+                        System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                        System.Security.Cryptography.X509Certificates.X509Chain chain,
+                        System.Net.Security.SslPolicyErrors sslPolicyErrors) => true;
+
+                    // Conectar a Mailtrap
+                    client.Connect("sandbox.smtp.mailtrap.io", 2525, MailKit.Security.SecureSocketOptions.StartTls);
+                    client.Authenticate(config["SMTPSettings:SMTPUser"], config["SMTPSettings:SMTPPass"]); // Autenticación con Mailtrap
+                    await client.SendAsync(message);
+                    client.Disconnect(true);
+                }
+
+                return Ok(perfil);
+            }
+            catch (Exception ex)
+            {
+               
+                Console.WriteLine($"Error al generar no sabemos que : {ex.Message}");
+                return BadRequest(ex.Message);
+                
+            }
+        }
+
+        [HttpPost("email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> email([FromForm] string email)
+        {
+            Console.WriteLine(email);
+
+            try
+            {
+                var entidad = await _context.Propietario.FirstOrDefaultAsync(x => x.Email == email);
+
+                if (entidad != null)
+                {
+                    var token = GenerarToken(entidad);
+                    Console.WriteLine(token);
+                    return Ok(token); // Solo devuelve el token
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+ public string GenerarToken(Propietario propietario)
+        {
+            // Configuración del token desde el archivo appsettings.json
+            var issuer = config["TokenAuthentication:Issuer"];
+            var audience = config["TokenAuthentication:Audience"];
+            var secretKey = config["TokenAuthentication:SecretKey"];
+
+            // Convierte la clave secreta a bytes
+            var key = Encoding.ASCII.GetBytes(secretKey);
+
+            // Crea el manejador de tokens
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            // Define el descriptor del token, que contiene los claims y las configuraciones
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, propietario.Id_Propietario.ToString()),  // Identificador único del propietario
+            new Claim("Apellido", propietario.Apellido),  // Apellido del propietario
+            new Claim(ClaimTypes.Name, propietario.Nombre),  // Nombre del propietario
+            new Claim(ClaimTypes.Email, propietario.Email),  // Email del propietario
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),  // El token será válido por 1 hora
+                Issuer = issuer,  // Configuración del Issuer
+                Audience = audience,  // Configuración del Audience
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)  // Configuración de las credenciales de firma
+            };
+
+            // Crea el token
+            var tokenMail = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(tokenMail);
+
+            // Escribe el token en formato string
+            return tokenString;
+        }
 
 
 
