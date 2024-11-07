@@ -1,12 +1,52 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa1.PNG",
-      "PackagePath": "staticwebassets\\img\\casa1.PNG"
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241105-WA0054.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-20241105-WA0054.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-casa1.jpg",
+      "PackagePath": "staticwebassets\\img\\IMG-casa1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-casa3.png",
+      "PackagePath": "staticwebassets\\img\\IMG-casa3.png"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa10.PNG",
+      "PackagePath": "staticwebassets\\img\\casa10.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa11.PNG",
+      "PackagePath": "staticwebassets\\img\\casa11.PNG"
     },
     {
       "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa2.PNG",
       "PackagePath": "staticwebassets\\img\\casa2.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa4.PNG",
+      "PackagePath": "staticwebassets\\img\\casa4.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa5.PNG",
+      "PackagePath": "staticwebassets\\img\\casa5.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa6.PNG",
+      "PackagePath": "staticwebassets\\img\\casa6.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa7.PNG",
+      "PackagePath": "staticwebassets\\img\\casa7.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa8.PNG",
+      "PackagePath": "staticwebassets\\img\\casa8.PNG"
+    },
+    {
+      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\casa9.PNG",
+      "PackagePath": "staticwebassets\\img\\casa9.PNG"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.inmoWebApiLab3.props",

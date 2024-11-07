@@ -2,13 +2,14 @@
 using inmoWebApiLab3.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://192.168.0.18:5028");
+builder.WebHost.UseUrls("http://192.168.0.8:5028");
 
 // Agregar servicios a la colección de servicios
 builder.Services.AddControllers()
@@ -99,6 +100,12 @@ app.UseCors("AllowAll");
 app.UseRouting();
 // Habilitar archivos estáticos desde wwwroot
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "assets")),
+    RequestPath = "/assets"
+});
 app.UseAuthentication();  // Debe estar antes de UseAuthorization
 app.UseAuthorization();
 
