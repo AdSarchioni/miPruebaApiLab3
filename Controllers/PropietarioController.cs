@@ -309,7 +309,8 @@ namespace inmoWebApiLab3.Controllers.API  // Asegúrate que el namespace coincid
                 var perfil = new
                 {
                     Email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value, // sacamos el email correcto
-                    Nombre = User.Claims.First(x => x.Type == "Apellido").Value, // sacamos el apellido 
+                    Nombre = User.Claims.First(x => x.Type == ClaimTypes.Name).Value, 
+                    Apellido = User.Claims.First(x => x.Type == "Apellido").Value // sacamos el apellido 
                 };
                 // Busca el propietario por nombre de usuario
                 var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.Email == perfil.Email);
@@ -349,7 +350,7 @@ namespace inmoWebApiLab3.Controllers.API  // Asegúrate que el namespace coincid
                 message.Body = new TextPart("html")
                 {
                     Text = @$"<h1>Hola</h1>
-                     <p>¡Solicitaste el cambio tu Clave, {perfil.Nombre}!</p>
+                     <p>¡Solicitaste el cambio de tu Clave, {perfil.Nombre+" " + perfil.Apellido }!</p>
                      <p>Tu nueva clave es: {nuevaClave}</p>",
                 };
 
