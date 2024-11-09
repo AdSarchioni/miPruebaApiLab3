@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://192.168.1.104:5028");
+builder.WebHost.UseUrls("http://192.168.1.102:5028");
 
 // Agregar servicios a la colección de servicios
 builder.Services.AddControllers()
