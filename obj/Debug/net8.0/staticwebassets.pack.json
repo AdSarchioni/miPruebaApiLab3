@@ -1,14 +1,6 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-20241105-WA0054.jpg",
-      "PackagePath": "staticwebassets\\img\\IMG-20241105-WA0054.jpg"
-    },
-    {
-      "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-casa1.jpg",
-      "PackagePath": "staticwebassets\\img\\IMG-casa1.jpg"
-    },
-    {
       "Id": "C:\\Users\\adsar\\Documents\\GitHub\\miPruebaApiLab3\\wwwroot\\img\\IMG-casa3.png",
       "PackagePath": "staticwebassets\\img\\IMG-casa3.png"
     },

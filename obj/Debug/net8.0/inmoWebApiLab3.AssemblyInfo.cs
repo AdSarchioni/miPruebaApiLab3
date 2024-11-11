@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("inmoWebApiLab3")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e37d49fed2745851641c8063e3c527a65684ea13")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+740cb7653dfd6f25aa19f7a56d6e1712bc4c155f")]
 [assembly: System.Reflection.AssemblyProductAttribute("inmoWebApiLab3")]
 [assembly: System.Reflection.AssemblyTitleAttribute("inmoWebApiLab3")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
